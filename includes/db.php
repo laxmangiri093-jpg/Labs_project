@@ -3,7 +3,7 @@
 // Include with: require_once __DIR__ . '/db.php';      (from includes/)
 //               require_once __DIR__ . '/../includes/db.php'; (from admin/)
 $host = 'localhost';
-$db   = 'demo_finalassignment';
+$db   = 'labs_project';
 $user = 'root';
 $pass = '';
 try {
