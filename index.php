@@ -130,7 +130,7 @@ function isActive($linkLevel, $currentLevel) {
 </head>
 <body>
 
-<!-- TOP BAR — active class highlights current level -->
+
 <div class="top-bar">
   <div class="top-bar-inner">
     <span>📧 &nbsp;info@studentcoursehub.ac.uk</span>

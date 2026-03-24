@@ -14,7 +14,7 @@ try {
     $row = $pdo->query("SELECT AdminID, PasswordHash FROM AdminUsers WHERE Username = 'admin'")->fetch();
     if (!$row) {
         // No admin exists at all — create one fresh
-        $hash = password_hash('Admin1234', PASSWORD_BCRYPT);
+        
         $pdo->prepare("INSERT INTO AdminUsers (Username, PasswordHash, Role) VALUES ('admin', ?, 'super')")
             ->execute([$hash]);
     } else {

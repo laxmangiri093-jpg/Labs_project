@@ -72,7 +72,7 @@ $totalProgrammeAppearances = array_sum(array_map('count', $moduleMap));
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>My Teaching | Labs Project Staff</title>
+  <title>My Teaching | Staff Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
@@ -216,4 +216,337 @@ $totalProgrammeAppearances = array_sum(array_map('count', $moduleMap));
       margin-bottom:6px;text-decoration:none;
       transition:all .2s;gap:8px;
     }
-    .prog-item:hover{background
+    .prog-item:hover{background:#e8f0fe;border-color:#c5d8f8}
+    .prog-item-left{display:flex;align-items:center;gap:8px;min-width:0}
+    .prog-item-left span{font-size:.83rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .prog-item-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .year-tag{
+      font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;
+      background:#dbeafe;color:#1565c0;white-space:nowrap;
+    }
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+    .badge-ug{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9}
+    .badge-pg{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7}
+    .badge-draft{background:#fff3e0;color:#e65100;border:1px solid #ffcc80}
+    .no-progs{
+      font-size:.82rem;color:var(--text-muted);
+      padding:12px;border-radius:8px;
+      background:#f8fafc;border:1px dashed var(--border);text-align:center;
+    }
+
+    /* PROGRAMME LEADER TABLE */
+    .table-box{background:white;border-radius:16px;box-shadow:var(--card-shadow);border:1.5px solid var(--border);overflow:hidden;margin-bottom:44px}
+    .table-box table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .table-box th{background:#0d47a1;color:white;padding:12px 16px;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+    .table-box td{padding:14px 16px;border-bottom:1px solid var(--border)}
+    .table-box tr:last-child td{border-bottom:none}
+    .table-box tr:hover td{background:#f8fafc}
+    .prog-name-cell{font-weight:600;color:var(--text)}
+    .prog-name-cell a{color:var(--accent);text-decoration:none}
+    .prog-name-cell a:hover{text-decoration:underline}
+    .status-pub{color:#2e7d32;font-weight:600;font-size:.82rem}
+    .status-draft{color:#e65100;font-weight:600;font-size:.82rem}
+    .empty-state{text-align:center;padding:40px;color:var(--text-muted);font-size:.9rem}
+
+    /* STUDENT TABLE */
+    .student-table-box{background:white;border-radius:16px;box-shadow:var(--card-shadow);border:1.5px solid var(--border);overflow:hidden;margin-bottom:44px}
+    .student-table-box table{width:100%;border-collapse:collapse;font-size:.88rem}
+    .student-table-box th{background:#1b5e20;color:white;padding:12px 16px;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+    .student-table-box td{padding:13px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+    .student-table-box tr:last-child td{border-bottom:none}
+    .student-table-box tr:hover td{background:#f1f8f2}
+    .student-name{font-weight:600;color:var(--text)}
+    .student-email a{color:var(--accent);text-decoration:none;font-size:.85rem}
+    .student-email a:hover{text-decoration:underline}
+    .reg-date{color:var(--text-muted);font-size:.82rem;white-space:nowrap}
+    .filter-row{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);background:#fafcff;flex-wrap:wrap}
+    .filter-row label{font-size:.8rem;font-weight:600;color:var(--text-muted)}
+    .filter-row select{padding:6px 12px;border-radius:8px;border:1.5px solid var(--border);background:white;font-family:'DM Sans',sans-serif;font-size:.83rem;color:var(--text);outline:none;cursor:pointer}
+    .filter-row select:focus{border-color:var(--accent)}
+    .total-note{font-size:.8rem;color:var(--text-muted);margin-left:auto}
+
+    /* RESPONSIVE */
+    @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:900px){
+      .sidebar{display:none}
+      .main{padding:24px 20px}
+      .modules-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:600px){.stats{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <a href="../index.php" class="sidebar-logo">
+      <div class="icon-box">🎓</div>
+      <span>Course Hub<small>Staff Portal</small></span>
+    </a>
+    <div class="staff-badge">
+      <div class="avatar"><?= strtoupper(substr($staffName, 3, 1)) ?></div>
+      <div class="name"><?= htmlspecialchars($staffName) ?></div>
+      <div class="role"><?= htmlspecialchars($staffTitle) ?></div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="dashboard.php" class="active">
+      <span class="nav-icon">📋</span> My Teaching
+    </a>
+    <a href="#students" onclick="document.getElementById('students').scrollIntoView({behavior:'smooth'});return false;">
+      <span class="nav-icon">👥</span> Interested Students
+    </a>
+    <a href="../index.php" target="_blank">
+      <span class="nav-icon">🌐</span> View Student Site
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="logout.php">
+      <span>🚪</span> Sign Out
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>My Teaching Overview</h1>
+      <p>Your module responsibilities and programme assignments</p>
+    </div>
+    <div class="topbar-right">
+      <a href="../index.php" class="pill" target="_blank">🌐 View Site</a>
+      <a href="logout.php" class="pill" style="color:#e53935;border-color:#ffcdd2;">🚪 Sign Out</a>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="icon">📚</div>
+      <div class="num"><?= $totalModulesLed ?></div>
+      <div class="lbl">Modules I Lead</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">🎓</div>
+      <div class="num"><?= $totalProgrammeAppearances ?></div>
+      <div class="lbl">Programme Appearances</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">🏆</div>
+      <div class="num"><?= $totalProgrammesLed ?></div>
+      <div class="lbl">Programmes I Lead</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">👥</div>
+      <div class="num"><?= $totalStudentsInterested ?></div>
+      <div class="lbl">Interested Students</div>
+    </div>
+  </div>
+
+  <!-- MY MODULES -->
+  <div class="section-hdr">
+    <h2>📚 Modules I Lead</h2>
+    <span class="count-pill"><?= $totalModulesLed ?> module<?= $totalModulesLed !== 1 ? 's' : '' ?></span>
+  </div>
+
+  <?php if (empty($myModules)): ?>
+    <div class="empty-state" style="background:white;border-radius:16px;border:1.5px solid var(--border);margin-bottom:44px;">
+      <p style="font-size:2rem;margin-bottom:10px;">📭</p>
+      <p>You are not currently assigned as a module leader for any modules.</p>
+    </div>
+  <?php else: ?>
+  <div class="modules-grid">
+    <?php foreach ($myModules as $mod): ?>
+      <div class="module-card">
+        <div class="module-card-head">
+          <h3><?= htmlspecialchars($mod['ModuleName']) ?></h3>
+          <div class="mod-icon">📚</div>
+        </div>
+        <div class="module-card-body">
+          <p class="mod-desc">
+            <?= htmlspecialchars(mb_substr($mod['Description'] ?? 'No description available.', 0, 120)) ?>
+            <?= strlen($mod['Description'] ?? '') > 120 ? '…' : '' ?>
+          </p>
+
+          <div class="prog-list-label">Appears in Programmes</div>
+          <?php $progs = $moduleMap[$mod['ModuleID']] ?? []; ?>
+          <?php if (empty($progs)): ?>
+            <div class="no-progs">Not assigned to any programme yet</div>
+          <?php else: ?>
+            <?php foreach ($progs as $pg): ?>
+              <div class="prog-item">
+                <div class="prog-item-left">
+                  <span><?= htmlspecialchars($pg['ProgrammeName']) ?></span>
+                </div>
+                <div class="prog-item-right">
+                  <span class="year-tag">Year <?= (int)$pg['Year'] ?></span>
+                  <span class="badge <?= strpos($pg['LevelName'],'Under') !== false ? 'badge-ug' : 'badge-pg' ?>">
+                    <?= $pg['LevelName'] === 'Undergraduate' ? 'UG' : 'PG' ?>
+                  </span>
+                  <?php if (!$pg['IsPublished']): ?>
+                    <span class="badge badge-draft">Draft</span>
+                  <?php endif; ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
+
+  <!-- PROGRAMMES I LEAD -->
+  <div class="section-hdr">
+    <h2>🏆 Programmes I Lead</h2>
+    <span class="count-pill"><?= $totalProgrammesLed ?> programme<?= $totalProgrammesLed !== 1 ? 's' : '' ?></span>
+  </div>
+
+  <?php if (empty($leadProgrammes)): ?>
+    <div class="empty-state" style="background:white;border-radius:16px;border:1.5px solid var(--border);">
+      <p style="font-size:2rem;margin-bottom:10px;">📭</p>
+      <p>You are not currently assigned as a programme leader for any programmes.</p>
+    </div>
+  <?php else: ?>
+  <div class="table-box">
+    <table>
+      <thead>
+        <tr>
+          <th>Programme</th>
+          <th>Level</th>
+          <th>Modules</th>
+          <th>Interested Students</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($leadProgrammes as $lp): ?>
+          <tr>
+            <td class="prog-name-cell">
+              <a href="../programme.php?id=<?= $lp['ProgrammeID'] ?>" target="_blank">
+                <?= htmlspecialchars($lp['ProgrammeName']) ?>
+              </a>
+            </td>
+            <td>
+              <span class="badge <?= $lp['LevelID'] == 1 ? 'badge-ug' : 'badge-pg' ?>">
+                <?= htmlspecialchars($lp['LevelName']) ?>
+              </span>
+            </td>
+            <td><?= (int)$lp['ModuleCount'] ?></td>
+            <td><?= (int)$lp['StudentCount'] ?></td>
+            <td>
+              <?php if ($lp['IsPublished']): ?>
+                <span class="status-pub">✔ Published</span>
+              <?php else: ?>
+                <span class="status-draft">✎ Draft</span>
+              <?php endif; ?>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+  <?php endif; ?>
+
+  <!-- INTERESTED STUDENTS -->
+  <div class="section-hdr" id="students" style="scroll-margin-top:30px;">
+    <h2>👥 Interested Students</h2>
+    <span class="count-pill"><?= $totalStudentsInterested ?> student<?= $totalStudentsInterested !== 1 ? 's' : '' ?></span>
+  </div>
+
+  <?php if (empty($leadProgrammes)): ?>
+    <div class="empty-state" style="background:white;border-radius:16px;border:1.5px solid var(--border);margin-bottom:44px;">
+      <p style="font-size:2rem;margin-bottom:10px;">📭</p>
+      <p>You need to be a programme leader to see interested students.</p>
+    </div>
+  <?php elseif (empty($interestedStudents)): ?>
+    <div class="empty-state" style="background:white;border-radius:16px;border:1.5px solid var(--border);margin-bottom:44px;">
+      <p style="font-size:2rem;margin-bottom:10px;">📭</p>
+      <p>No students have registered interest in your programmes yet.</p>
+    </div>
+  <?php else: ?>
+  <div class="table-box" style="margin-bottom:44px;">
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);background:#fafcff;flex-wrap:wrap;">
+      <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);">Filter:</label>
+      <select id="prog-filter" onchange="filterStudents()"
+              style="padding:6px 12px;border-radius:8px;border:1.5px solid var(--border);background:white;font-family:'DM Sans',sans-serif;font-size:.83rem;color:var(--text);outline:none;cursor:pointer;">
+        <option value="">All Programmes</option>
+        <?php foreach ($leadProgrammes as $lp): ?>
+          <option value="prog-<?= $lp['ProgrammeID'] ?>"><?= htmlspecialchars($lp['ProgrammeName']) ?></option>
+        <?php endforeach; ?>
+      </select>
+      <input type="search" id="stu-search" placeholder="Search name or email…" oninput="filterStudents()"
+             style="padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:white;font-family:'DM Sans',sans-serif;font-size:.83rem;outline:none;width:200px;">
+      <span id="filter-count" style="margin-left:auto;font-size:.8rem;color:var(--text-muted);">
+        <?= $totalStudentsInterested ?> registration<?= $totalStudentsInterested !== 1 ? 's' : '' ?>
+      </span>
+    </div>
+    <table id="student-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Student Name</th>
+          <th>Email Address</th>
+          <th>Programme</th>
+          <th>Level</th>
+          <th>Registered</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php $i = 1; foreach ($interestedStudents as $s): ?>
+          <tr class="stu-row prog-<?= $s['ProgrammeID'] ?>"
+              data-name="<?= strtolower(htmlspecialchars($s['StudentName'])) ?>"
+              data-email="<?= strtolower(htmlspecialchars($s['Email'])) ?>">
+            <td class="row-num" style="color:var(--text-muted);font-size:.82rem;"><?= $i++ ?></td>
+            <td style="font-weight:600;"><?= htmlspecialchars($s['StudentName']) ?></td>
+            <td>
+              <a href="mailto:<?= htmlspecialchars($s['Email']) ?>"
+                 style="color:var(--accent);text-decoration:none;font-size:.87rem;">
+                <?= htmlspecialchars($s['Email']) ?>
+              </a>
+            </td>
+            <td style="font-size:.87rem;"><?= htmlspecialchars($s['ProgrammeName']) ?></td>
+            <td>
+              <span class="badge <?= $s['LevelID'] == 1 ? 'badge-ug' : 'badge-pg' ?>">
+                <?= $s['LevelName'] === 'Undergraduate' ? 'UG' : 'PG' ?>
+              </span>
+            </td>
+            <td style="color:var(--text-muted);font-size:.82rem;white-space:nowrap;">
+              <?= date('d M Y', strtotime($s['RegisteredAt'])) ?>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+  <?php endif; ?>
+
+</div><!-- /main -->
+
+<script>
+function filterStudents() {
+  const prog   = document.getElementById('prog-filter').value;
+  const search = document.getElementById('stu-search').value.toLowerCase();
+  const rows   = document.querySelectorAll('.stu-row');
+  let visible  = 0;
+  rows.forEach(r => {
+    const matchProg   = !prog   || r.classList.contains(prog);
+    const matchSearch = !search || r.dataset.name.includes(search) || r.dataset.email.includes(search);
+    const show = matchProg && matchSearch;
+    r.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  let n = 1;
+  rows.forEach(r => { if (r.style.display !== 'none') r.querySelector('.row-num').textContent = n++; });
+  document.getElementById('filter-count').textContent =
+    `${visible} registration${visible !== 1 ? 's' : ''}`;
+}
+</script>
+</body>
+</html>
