@@ -232,7 +232,11 @@ function isActive($linkLevel, $currentLevel) {
         <div class="grid">
           <?php foreach($programmes as $p): ?>
             <a href="programme.php?id=<?= $p['ProgrammeID'] ?>" class="card">
-              <div class="card-placeholder">🎓</div>
+              <?php if(!empty($p['Image'])): ?>
+                <img src="<?= htmlspecialchars($p['Image']) ?>" alt="<?= htmlspecialchars($p['ProgrammeName']) ?>" style="width:100%;height:185px;object-fit:cover;">
+              <?php else: ?>
+                <div class="card-placeholder">🎓</div>
+              <?php endif; ?>
               <div class="card-body">
                 <span class="badge <?= $p['LevelID']==1?'badge-ug':'badge-pg' ?>">
                   <?= htmlspecialchars($p['LevelName']) ?>

@@ -60,7 +60,11 @@ require_once __DIR__ . '/includes/header.php';
       </div>
       <a href="#register" class="btn btn-primary">Register My Interest</a>
     </div>
-    <div class="card-placeholder" style="height:280px;border-radius:16px;" aria-hidden="true">🎓</div>
+    <?php if(!empty($prog['Image'])): ?>
+      <img src="<?= htmlspecialchars($prog['Image']) ?>" alt="<?= htmlspecialchars($prog['ProgrammeName']) ?>" style="width:100%;height:280px;object-fit:cover;border-radius:16px;">
+    <?php else: ?>
+      <div class="card-placeholder" style="height:280px;border-radius:16px;" aria-hidden="true">🎓</div>
+    <?php endif; ?>
   </div>
 
   <section aria-labelledby="mod-heading">
@@ -72,7 +76,11 @@ require_once __DIR__ . '/includes/header.php';
         <div class="grid grid-3">
           <?php foreach($mods as $mod): ?>
             <div class="card" style="cursor:default;">
-              <div class="card-placeholder" style="height:110px;" aria-hidden="true">📚</div>
+              <?php if(!empty($mod['Image'])): ?>
+                <img src="<?= htmlspecialchars($mod['Image']) ?>" alt="<?= htmlspecialchars($mod['ModuleName']) ?>" style="width:100%;height:110px;object-fit:cover;">
+              <?php else: ?>
+                <div class="card-placeholder" style="height:110px;" aria-hidden="true">📚</div>
+              <?php endif; ?>
               <div class="card-body">
                 <h3 class="card-title" style="font-size:.95rem;"><?= htmlspecialchars($mod['ModuleName']) ?></h3>
                 <p class="card-text" style="font-size:.85rem;"><?= htmlspecialchars(mb_substr($mod['Description']??'',0,90)) ?>...</p>
